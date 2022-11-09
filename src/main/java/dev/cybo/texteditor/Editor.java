@@ -178,7 +178,8 @@ public class Editor {
 
     private static void openFile(JTabbedPane jTabbedPane) {
         JFileChooser jFileChooser = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Text files", "txt", "java");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Text files",
+                "txt", "java", "kt", "js", "csv", "css", "cs", "cpp", "c", "go", "html", "json", "lua", "php");
         jFileChooser.setFileFilter(filter);
 
         int userResponse = jFileChooser.showOpenDialog(null);
