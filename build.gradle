@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+}
+
+group 'dev.cybo'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    // https://github.com/bobbylight/RSyntaxTextArea
+    implementation 'com.github.bobbylight:RSyntaxTextArea:3.3.0'
+
+    // https://github.com/JFormDesigner/FlatLaf
+    implementation 'com.formdev:flatlaf:2.6'
+}
+
+test {
+    useJUnitPlatform()
+}
