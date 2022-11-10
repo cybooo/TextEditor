@@ -39,51 +39,46 @@ public class Editor {
         jTabbedPane.addMouseListener(new MouseListener() {
 
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent event) {
             }
 
             @Override
-            public void mousePressed(MouseEvent e) {
-
-                if (SwingUtilities.isMiddleMouseButton(e)) {
-                    if (jTabbedPane.getSelectedIndex() != 0) {
-                        jTabbedPane.remove(jTabbedPane.getSelectedIndex());
-                    }
+            public void mousePressed(MouseEvent event) {
+                if (SwingUtilities.isMiddleMouseButton(event) && jTabbedPane.getSelectedIndex() != 0) {
+                    jTabbedPane.remove(jTabbedPane.getSelectedIndex());
                 }
 
-                if (SwingUtilities.isRightMouseButton(e)) {
-                    if (jTabbedPane.getSelectedIndex() != 0) {
+                if (SwingUtilities.isRightMouseButton(event) && jTabbedPane.getSelectedIndex() != 0) {
 
-                        JPopupMenu jPopupMenu = new JPopupMenu();
+                    JPopupMenu jPopupMenu = new JPopupMenu();
+                    JMenuItem delete = new JMenuItem("Close");
 
-                        JMenuItem delete = new JMenuItem("Close");
-                        delete.addActionListener(actionEvent -> {
-                            if (jTabbedPane.getSelectedIndex() == 0) {
-                                showNoFileSelectedWarning();
-                                return;
-                            }
-                            closeSelectedFile(jTabbedPane);
-                        });
+                    delete.addActionListener(actionEvent -> {
+                        if (jTabbedPane.getSelectedIndex() == 0) {
+                            showNoFileSelectedWarning();
+                            return;
+                        }
+                        closeSelectedFile(jTabbedPane);
+                    });
 
-                        JMenuItem save = new JMenuItem("Save");
-                        save.addActionListener(actionEvent -> saveFile(jTabbedPane));
-                        jPopupMenu.add(delete);
-                        jPopupMenu.add(save);
-                        jPopupMenu.show(FRAME, e.getX(), e.getY() + 50);
-                    }
+                    JMenuItem save = new JMenuItem("Save");
+                    save.addActionListener(actionEvent -> saveFile(jTabbedPane));
+                    jPopupMenu.add(delete);
+                    jPopupMenu.add(save);
+                    jPopupMenu.show(FRAME, event.getX(), event.getY() + 50);
                 }
             }
 
             @Override
-            public void mouseReleased(MouseEvent e) {
+            public void mouseReleased(MouseEvent event) {
             }
 
             @Override
-            public void mouseEntered(MouseEvent e) {
+            public void mouseEntered(MouseEvent event) {
             }
 
             @Override
-            public void mouseExited(MouseEvent e) {
+            public void mouseExited(MouseEvent event) {
             }
         });
 
@@ -106,26 +101,29 @@ public class Editor {
         JMenuItem exit = new JMenuItem("Exit");
         JMenuItem fontSize = new JMenuItem("Font Size");
 
-        newFile.addActionListener(e -> createNewFile(jTabbedPane));
-        open.addActionListener(e -> openFile(jTabbedPane));
-        exit.addActionListener(e -> System.exit(0));
-        save.addActionListener(e -> saveFile(jTabbedPane));
-        fontSize.addActionListener(e -> {
+        newFile.addActionListener(event -> createNewFile(jTabbedPane));
+        open.addActionListener(event -> openFile(jTabbedPane));
+        exit.addActionListener(event -> System.exit(0));
+        save.addActionListener(event -> saveFile(jTabbedPane));
+        fontSize.addActionListener(event -> {
             if (jTabbedPane.getSelectedIndex() == 0) {
                 showNoFileSelectedWarning();
                 return;
             }
+
             try {
                 int userInput = Integer.parseInt(JOptionPane.showInputDialog(null, "Font size:",
                         "Change Font Size", JOptionPane.INFORMATION_MESSAGE));
                 if (userInput > 150) {
-                    JOptionPane.showMessageDialog(FRAME, "Font size can't be higher than 150!", "Warning", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(FRAME, "Font size can't be higher than 150!", "Warning",
+                            JOptionPane.WARNING_MESSAGE);
                     return;
                 }
                 Font font = SELECTED_TEXT_AREA.get().getFont();
                 SELECTED_TEXT_AREA.get().setFont(new Font(font.getFontName(), font.getStyle(), userInput));
             } catch (NumberFormatException exception) {
-                JOptionPane.showMessageDialog(FRAME, "Font size needs to be a number!", "Warning", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(FRAME, "Font size needs to be a number!", "Warning",
+                        JOptionPane.WARNING_MESSAGE);
             }
         });
 
@@ -150,7 +148,7 @@ public class Editor {
         newFile1.setFocusPainted(false);
         newFile1.setContentAreaFilled(false);
         newFile1.setPreferredSize(new Dimension(64, 32));
-        newFile1.addActionListener(e -> createNewFile(jTabbedPane));
+        newFile1.addActionListener(event -> createNewFile(jTabbedPane));
 
         JButton openFile = new JButton("Open File");
         openFile.setBorder(null);
@@ -158,7 +156,7 @@ public class Editor {
         openFile.setFocusPainted(false);
         openFile.setContentAreaFilled(false);
         openFile.setPreferredSize(new Dimension(64, 32));
-        openFile.addActionListener(e -> openFile(jTabbedPane));
+        openFile.addActionListener(event -> openFile(jTabbedPane));
 
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridwidth = GridBagConstraints.REMAINDER;
@@ -184,7 +182,8 @@ public class Editor {
 
             @Override
             protected int calculateTabAreaHeight(int tabPlacement, int runCount, int maxTabHeight) {
-                return jTabbedPane.getTabCount() > 1 ? super.calculateTabAreaHeight(tabPlacement, runCount, maxTabHeight) : -1;
+                return jTabbedPane.getTabCount() > 1 ?
+                        super.calculateTabAreaHeight(tabPlacement, runCount, maxTabHeight) : -1;
             }
         });
 
@@ -195,9 +194,9 @@ public class Editor {
             showNoFileSelectedWarning();
             return;
         }
+
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File("."));
-
         int userResponse = fileChooser.showSaveDialog(null);
 
         if (userResponse == JFileChooser.APPROVE_OPTION) {
@@ -206,6 +205,8 @@ public class Editor {
                 fileOut.println(SELECTED_TEXT_AREA.get().getText());
             } catch (FileNotFoundException exception) {
                 exception.printStackTrace();
+                JOptionPane.showMessageDialog(FRAME, "Something went wrong while saving the file!", "Warning",
+                        JOptionPane.WARNING_MESSAGE);
             }
         }
     }
@@ -213,14 +214,15 @@ public class Editor {
     private static void openFile(JTabbedPane jTabbedPane) {
         JFileChooser jFileChooser = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Text files",
-                "txt", "java", "kt", "js", "csv", "css", "cs", "cpp", "c", "go", "html", "json", "lua", "php");
+                "txt", "java", "kt", "js", "csv", "css", "cs", "cpp", "c", "go",
+                "html", "json", "lua", "php");
         jFileChooser.setFileFilter(filter);
 
         int userResponse = jFileChooser.showOpenDialog(null);
 
         if (userResponse == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = new File(jFileChooser.getSelectedFile().getAbsolutePath());
 
+            File selectedFile = new File(jFileChooser.getSelectedFile().getAbsolutePath());
             RSyntaxTextArea jTextArea = constructNewArea(jTabbedPane, selectedFile.getName());
 
             if (jTextArea == null) {
@@ -236,8 +238,9 @@ public class Editor {
                 }
             } catch (FileNotFoundException exception) {
                 exception.printStackTrace();
+                JOptionPane.showMessageDialog(FRAME, "Something went wrong while reading the file's contents!", "Warning",
+                        JOptionPane.WARNING_MESSAGE);
             }
-
         }
     }
 
@@ -250,7 +253,8 @@ public class Editor {
         for (int i = 0; i < jTabbedPane.getTabCount(); i++) {
             Component component = jTabbedPane.getComponentAt(i);
             if (component.getName() != null && component.getName().equals(name)) {
-                JOptionPane.showMessageDialog(FRAME, "File with this name is already opened!", "Warning", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(FRAME, "File with this name is already opened!", "Warning",
+                        JOptionPane.WARNING_MESSAGE);
                 return null;
             }
         }
@@ -266,8 +270,10 @@ public class Editor {
         try {
             Theme.load(Main.class.getResourceAsStream(
                     "/org/fife/ui/rsyntaxtextarea/themes/dark.xml")).apply(syntaxTextArea);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException exception) {
+            exception.printStackTrace();
+            JOptionPane.showMessageDialog(FRAME, "Something went wrong while updating the theme!", "Warning",
+                    JOptionPane.WARNING_MESSAGE);
         }
 
         setSyntaxEditingStyleByExtension(syntaxTextArea, name);
@@ -293,16 +299,18 @@ public class Editor {
     private static void createNewFile(JTabbedPane jTabbedPane) {
         String name = JOptionPane.showInputDialog(null, "File name:",
                 "Create New File", JOptionPane.INFORMATION_MESSAGE);
+
         if (name != null && name.contains(".")) {
             constructNewArea(jTabbedPane, name);
         } else {
-            JOptionPane.showMessageDialog(FRAME, "You need to specify a file extension!", "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(FRAME, "You need to specify a file extension!", "Warning",
+                    JOptionPane.WARNING_MESSAGE);
         }
-
     }
 
     private static void showNoFileSelectedWarning() {
-        JOptionPane.showMessageDialog(FRAME, "You need to have a text file selected!", "Warning", JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(FRAME, "You need to have a text file selected!", "Warning",
+                JOptionPane.WARNING_MESSAGE);
     }
 
     private static void setSyntaxEditingStyleByExtension(RSyntaxTextArea syntaxTextArea, String fileName) {
