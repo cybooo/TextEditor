@@ -6,6 +6,7 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
@@ -17,6 +18,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -26,6 +29,14 @@ public class Editor {
     private static final AtomicReference<JTextArea> SELECTED_TEXT_AREA = new AtomicReference<>();
 
     public Editor() {
+
+        try {
+            URL url = Main.class.getClassLoader().getResource("icon.png");
+            File imageFile = new File(url.toURI());
+            FRAME.setIconImage(ImageIO.read(imageFile));
+        } catch (URISyntaxException | IOException exception) {
+            exception.printStackTrace();
+        }
 
         FRAME.setTitle("Text Editor");
         FRAME.setSize(1200, 800);
@@ -205,7 +216,8 @@ public class Editor {
                 fileOut.println(SELECTED_TEXT_AREA.get().getText());
             } catch (FileNotFoundException exception) {
                 exception.printStackTrace();
-                JOptionPane.showMessageDialog(FRAME, "Something went wrong while saving the file!", "Warning",
+                JOptionPane.showMessageDialog(
+                        FRAME, "Something went wrong while saving the file!", "Warning",
                         JOptionPane.WARNING_MESSAGE);
             }
         }
@@ -238,7 +250,8 @@ public class Editor {
                 }
             } catch (FileNotFoundException exception) {
                 exception.printStackTrace();
-                JOptionPane.showMessageDialog(FRAME, "Something went wrong while reading the file's contents!", "Warning",
+                JOptionPane.showMessageDialog(FRAME,
+                        "Something went wrong while reading the file's contents!", "Warning",
                         JOptionPane.WARNING_MESSAGE);
             }
         }
@@ -272,7 +285,8 @@ public class Editor {
                     "/org/fife/ui/rsyntaxtextarea/themes/dark.xml")).apply(syntaxTextArea);
         } catch (IOException exception) {
             exception.printStackTrace();
-            JOptionPane.showMessageDialog(FRAME, "Something went wrong while updating the theme!", "Warning",
+            JOptionPane.showMessageDialog(FRAME,
+                    "Something went wrong while updating the theme!", "Warning",
                     JOptionPane.WARNING_MESSAGE);
         }
 
