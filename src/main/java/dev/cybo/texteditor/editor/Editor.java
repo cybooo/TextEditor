@@ -1,5 +1,6 @@
-package dev.cybo.texteditor;
+package dev.cybo.texteditor.editor;
 
+import dev.cybo.texteditor.Main;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rsyntaxtextarea.Theme;
@@ -61,7 +62,7 @@ public class Editor {
                                 showNoFileSelectedWarning();
                                 return;
                             }
-                            jTabbedPane.remove(jTabbedPane.getSelectedIndex());
+                            closeSelectedFile(jTabbedPane);
                         });
 
                         JMenuItem save = new JMenuItem("Save");
@@ -115,6 +116,10 @@ public class Editor {
 
         Editor.FRAME.setJMenuBar(jMenuBar);
 
+        JLabel textEditor = new JLabel("TEXT EDITOR");
+        textEditor.setFont(new Font("Arial", Font.BOLD, 25));
+
+
         JButton newFile1 = new JButton("New File");
         newFile1.setBorder(null);
         newFile1.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -131,10 +136,15 @@ public class Editor {
         openFile.setPreferredSize(new Dimension(64, 32));
         openFile.addActionListener(e -> openFile(jTabbedPane));
 
+        GridBagConstraints gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridwidth = GridBagConstraints.REMAINDER;
+
         JPanel jPanel = new JPanel();
         jPanel.setLayout(new GridBagLayout());
+        jPanel.add(textEditor);
+        jPanel.add(new JLabel(""), gridBagConstraints);
         jPanel.add(newFile1);
-        jPanel.add(Box.createHorizontalStrut(10));
+        jPanel.add(new JLabel(""), gridBagConstraints);
         jPanel.add(openFile);
 
         jTabbedPane.addTab("Home", jPanel);
@@ -185,12 +195,15 @@ public class Editor {
         int userResponse = jFileChooser.showOpenDialog(null);
 
         if (userResponse == JFileChooser.APPROVE_OPTION) {
-            File selFile = new File(jFileChooser.getSelectedFile().getAbsolutePath());
+            File selectedFile = new File(jFileChooser.getSelectedFile().getAbsolutePath());
 
-            RSyntaxTextArea jTextArea = constructNewArea(jTabbedPane, selFile.getName());
+            RSyntaxTextArea jTextArea = constructNewArea(jTabbedPane, selectedFile.getName());
+            if (jTextArea == null) {
+                return;
+            }
 
-            try (Scanner fileIn = new Scanner(selFile)) {
-                if (selFile.isFile()) {
+            try (Scanner fileIn = new Scanner(selectedFile)) {
+                if (selectedFile.isFile()) {
                     while (fileIn.hasNextLine()) {
                         String line = fileIn.nextLine() + "\n";
                         jTextArea.append(line);
@@ -203,14 +216,28 @@ public class Editor {
         }
     }
 
+    public void closeSelectedFile(JTabbedPane jTabbedPane) {
+        jTabbedPane.remove(jTabbedPane.getSelectedIndex());
+    }
+
     private static RSyntaxTextArea constructNewArea(JTabbedPane jTabbedPane, String name) {
+
+        for (int i = 0; i < jTabbedPane.getTabCount(); i++) {
+            Component component = jTabbedPane.getComponentAt(i);
+            if (component.getName() != null) {
+                if (component.getName().equals(name)) {
+                    JOptionPane.showMessageDialog(FRAME, "File with this name is already opened!", "Warning", JOptionPane.WARNING_MESSAGE);
+                    return null;
+                }
+            }
+        }
+
         JLabel jLabel = new JLabel(name);
         RSyntaxTextArea syntaxTextArea = new RSyntaxTextArea();
         RTextScrollPane scrollPane = new RTextScrollPane(syntaxTextArea);
 
         syntaxTextArea.getDocument().addUndoableEditListener(new UndoManager());
         syntaxTextArea.setBorder(null);
-        syntaxTextArea.setBackground(Color.BLACK);
         syntaxTextArea.setCodeFoldingEnabled(true);
 
         try {
@@ -223,6 +250,7 @@ public class Editor {
         setSyntaxEditingStyleByExtension(syntaxTextArea, name);
 
         scrollPane.setPreferredSize(new Dimension(450, 450));
+        scrollPane.setName(name);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setPreferredSize(new Dimension(450, 450));
         scrollPane.setBorder(null);
@@ -230,6 +258,10 @@ public class Editor {
 
         jTabbedPane.addTab(name, scrollPane);
         jTabbedPane.setTabComponentAt(jTabbedPane.getTabCount() - 1, jLabel);
+        jTabbedPane.setSelectedIndex(jTabbedPane.getTabCount() - 1);
+
+        Color color = new Color(60,63,65,255);
+        syntaxTextArea.setBackground(color);
 
         SELECTED_TEXT_AREA.set(syntaxTextArea);
         return syntaxTextArea;

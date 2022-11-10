@@ -1,6 +1,7 @@
 package dev.cybo.texteditor;
 
 import com.formdev.flatlaf.FlatDarkLaf;
+import dev.cybo.texteditor.editor.Editor;
 
 import javax.swing.*;
 
