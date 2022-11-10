@@ -87,32 +87,56 @@ public class Editor {
             }
         });
 
-        addDefaultButton(jTabbedPane);
+        addDefaultButtons(jTabbedPane);
 
         FRAME.add(jTabbedPane);
         FRAME.setVisible(true);
     }
 
-    private static void addDefaultButton(JTabbedPane jTabbedPane) {
+    private static void addDefaultButtons(JTabbedPane jTabbedPane) {
 
         JMenuBar jMenuBar = new JMenuBar();
-        JMenu fileButton = new JMenu("File");
+
+        JMenu fileMenu = new JMenu("File");
+        JMenu editMenu = new JMenu("Edit");
+
         JMenuItem newFile = new JMenuItem("New");
         JMenuItem open = new JMenuItem("Open");
         JMenuItem save = new JMenuItem("Save");
         JMenuItem exit = new JMenuItem("Exit");
+        JMenuItem fontSize = new JMenuItem("Font Size");
 
         newFile.addActionListener(e -> createNewFile(jTabbedPane));
         open.addActionListener(e -> openFile(jTabbedPane));
         exit.addActionListener(e -> System.exit(0));
         save.addActionListener(e -> saveFile(jTabbedPane));
+        fontSize.addActionListener(e -> {
+            if (jTabbedPane.getSelectedIndex() == 0) {
+                showNoFileSelectedWarning();
+                return;
+            }
+            try {
+                int userInput = Integer.parseInt(JOptionPane.showInputDialog(null, "Font size:",
+                        "Change Font Size", JOptionPane.INFORMATION_MESSAGE));
+                if (userInput > 150) {
+                    JOptionPane.showMessageDialog(FRAME, "Font size can't be higher than 150!", "Warning", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                Font font = SELECTED_TEXT_AREA.get().getFont();
+                SELECTED_TEXT_AREA.get().setFont(new Font(font.getFontName(), font.getStyle(), userInput));
+            } catch (NumberFormatException exception) {
+                JOptionPane.showMessageDialog(FRAME, "Font size needs to be a number!", "Warning", JOptionPane.WARNING_MESSAGE);
+            }
+        });
 
-        fileButton.add(newFile);
-        fileButton.add(open);
-        fileButton.add(save);
-        fileButton.add(exit);
+        fileMenu.add(newFile);
+        fileMenu.add(open);
+        fileMenu.add(save);
+        fileMenu.add(exit);
+        editMenu.add(fontSize);
 
-        jMenuBar.add(fileButton);
+        jMenuBar.add(fileMenu);
+        jMenuBar.add(editMenu);
 
         Editor.FRAME.setJMenuBar(jMenuBar);
 
@@ -198,6 +222,7 @@ public class Editor {
             File selectedFile = new File(jFileChooser.getSelectedFile().getAbsolutePath());
 
             RSyntaxTextArea jTextArea = constructNewArea(jTabbedPane, selectedFile.getName());
+
             if (jTextArea == null) {
                 return;
             }
@@ -224,11 +249,9 @@ public class Editor {
 
         for (int i = 0; i < jTabbedPane.getTabCount(); i++) {
             Component component = jTabbedPane.getComponentAt(i);
-            if (component.getName() != null) {
-                if (component.getName().equals(name)) {
-                    JOptionPane.showMessageDialog(FRAME, "File with this name is already opened!", "Warning", JOptionPane.WARNING_MESSAGE);
-                    return null;
-                }
+            if (component.getName() != null && component.getName().equals(name)) {
+                JOptionPane.showMessageDialog(FRAME, "File with this name is already opened!", "Warning", JOptionPane.WARNING_MESSAGE);
+                return null;
             }
         }
 
@@ -260,7 +283,7 @@ public class Editor {
         jTabbedPane.setTabComponentAt(jTabbedPane.getTabCount() - 1, jLabel);
         jTabbedPane.setSelectedIndex(jTabbedPane.getTabCount() - 1);
 
-        Color color = new Color(60,63,65,255);
+        Color color = new Color(60, 63, 65, 255);
         syntaxTextArea.setBackground(color);
 
         SELECTED_TEXT_AREA.set(syntaxTextArea);
@@ -270,13 +293,12 @@ public class Editor {
     private static void createNewFile(JTabbedPane jTabbedPane) {
         String name = JOptionPane.showInputDialog(null, "File name:",
                 "Create New File", JOptionPane.INFORMATION_MESSAGE);
-        if (name != null) {
-            if (name.contains(".")) { // Asi není nejlepší způsob kontroly, zda má file nějaký extension - nenapadá mě zatím nic jiného.
-                constructNewArea(jTabbedPane, name);
-            } else {
-                JOptionPane.showMessageDialog(FRAME, "You need to specify a file extension!", "Warning", JOptionPane.WARNING_MESSAGE);
-            }
+        if (name != null && name.contains(".")) {
+            constructNewArea(jTabbedPane, name);
+        } else {
+            JOptionPane.showMessageDialog(FRAME, "You need to specify a file extension!", "Warning", JOptionPane.WARNING_MESSAGE);
         }
+
     }
 
     private static void showNoFileSelectedWarning() {
