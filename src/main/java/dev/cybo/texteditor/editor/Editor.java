@@ -95,17 +95,17 @@ public class Editor {
         JMenu fileMenu = new JMenu("File");
         JMenu editMenu = new JMenu("Edit");
 
-        JMenuItem newFile = new JMenuItem("New");
-        JMenuItem open = new JMenuItem("Open");
-        JMenuItem save = new JMenuItem("Save");
-        JMenuItem exit = new JMenuItem("Exit");
-        JMenuItem fontSize = new JMenuItem("Font Size");
+        JMenuItem newFileItem = new JMenuItem("New");
+        JMenuItem openItem = new JMenuItem("Open");
+        JMenuItem saveItem = new JMenuItem("Save");
+        JMenuItem exitItem = new JMenuItem("Exit");
+        JMenuItem fontSizeItem = new JMenuItem("Font Size");
 
-        newFile.addActionListener(event -> createNewFile(jTabbedPane));
-        open.addActionListener(event -> openFile(jTabbedPane));
-        exit.addActionListener(event -> System.exit(0));
-        save.addActionListener(event -> saveFile(jTabbedPane));
-        fontSize.addActionListener(event -> {
+        newFileItem.addActionListener(event -> createNewFile(jTabbedPane));
+        openItem.addActionListener(event -> openFile(jTabbedPane));
+        exitItem.addActionListener(event -> System.exit(0));
+        saveItem.addActionListener(event -> saveFile(jTabbedPane));
+        fontSizeItem.addActionListener(event -> {
             if (jTabbedPane.getSelectedIndex() == 0) {
                 showNoFileSelectedWarning();
                 return;
@@ -127,11 +127,11 @@ public class Editor {
             }
         });
 
-        fileMenu.add(newFile);
-        fileMenu.add(open);
-        fileMenu.add(save);
-        fileMenu.add(exit);
-        editMenu.add(fontSize);
+        fileMenu.add(newFileItem);
+        fileMenu.add(openItem);
+        fileMenu.add(saveItem);
+        fileMenu.add(exitItem);
+        editMenu.add(fontSizeItem);
 
         jMenuBar.add(fileMenu);
         jMenuBar.add(editMenu);
@@ -142,13 +142,13 @@ public class Editor {
         textEditor.setFont(new Font("Arial", Font.BOLD, 25));
 
 
-        JButton newFile1 = new JButton("New File");
-        newFile1.setBorder(null);
-        newFile1.setFont(new Font("Arial", Font.PLAIN, 14));
-        newFile1.setFocusPainted(false);
-        newFile1.setContentAreaFilled(false);
-        newFile1.setPreferredSize(new Dimension(64, 32));
-        newFile1.addActionListener(event -> createNewFile(jTabbedPane));
+        JButton newFile = new JButton("New File");
+        newFile.setBorder(null);
+        newFile.setFont(new Font("Arial", Font.PLAIN, 14));
+        newFile.setFocusPainted(false);
+        newFile.setContentAreaFilled(false);
+        newFile.setPreferredSize(new Dimension(64, 32));
+        newFile.addActionListener(event -> createNewFile(jTabbedPane));
 
         JButton openFile = new JButton("Open File");
         openFile.setBorder(null);
@@ -165,7 +165,7 @@ public class Editor {
         jPanel.setLayout(new GridBagLayout());
         jPanel.add(textEditor);
         jPanel.add(new JLabel(""), gridBagConstraints);
-        jPanel.add(newFile1);
+        jPanel.add(newFile);
         jPanel.add(new JLabel(""), gridBagConstraints);
         jPanel.add(openFile);
 
