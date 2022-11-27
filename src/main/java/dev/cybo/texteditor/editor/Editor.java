@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -32,7 +33,7 @@ public class Editor {
 
         try {
             URL url = Main.class.getClassLoader().getResource("icon.png");
-            File imageFile = new File(url.toURI());
+            File imageFile = new File(Objects.requireNonNull(url).toURI());
             FRAME.setIconImage(ImageIO.read(imageFile));
         } catch (URISyntaxException | IOException exception) {
             exception.printStackTrace();
