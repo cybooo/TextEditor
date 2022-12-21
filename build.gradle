@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 group 'dev.cybo'
@@ -18,6 +19,12 @@ dependencies {
     implementation 'com.formdev:flatlaf:2.6'
 }
 
-test {
-    useJUnitPlatform()
+shadowJar {
+    manifest {
+        attributes 'Main-Class': 'dev.cybo.texteditor.Main'
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
 }

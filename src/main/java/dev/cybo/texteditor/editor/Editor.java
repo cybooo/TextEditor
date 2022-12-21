@@ -6,7 +6,6 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
@@ -18,8 +17,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Objects;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicReference;
@@ -31,15 +28,9 @@ public class Editor {
 
     public Editor() {
 
-        try {
-            URL url = Main.class.getClassLoader().getResource("icon.png");
-            File imageFile = new File(Objects.requireNonNull(url).toURI());
-            FRAME.setIconImage(ImageIO.read(imageFile));
-        } catch (URISyntaxException | IOException exception) {
-            exception.printStackTrace();
-        }
-
         FRAME.setTitle("Text Editor");
+        FRAME.setIconImage(new ImageIcon(Objects.requireNonNull(Main.class.getClassLoader()
+                .getResource("icon.png"))).getImage());
         FRAME.setSize(1200, 800);
         FRAME.setLocationRelativeTo(null);
         FRAME.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -330,21 +321,21 @@ public class Editor {
 
     private static void setSyntaxEditingStyleByExtension(RSyntaxTextArea syntaxTextArea, String fileName) {
         switch (fileName.split("\\.")[1]) {
-            case "java" -> syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
-            case "kt" -> syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_KOTLIN);
-            case "js" -> syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT);
-            case "csv" -> syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_CSV);
-            case "css" -> syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_CSS);
-            case "cs" -> syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_CSHARP);
-            case "cpp" -> syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_CPLUSPLUS);
-            case "c" -> syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_C);
-            case "go" -> syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_GO);
-            case "html" -> syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_HTML);
-            case "json" -> syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JSON);
-            case "lua" -> syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_LUA);
-            case "php" -> syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_PHP);
-            case "py" -> syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_PYTHON);
-            default -> syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
+            case "java": syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA); break;
+            case "kt": syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_KOTLIN); break;
+            case "js": syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVASCRIPT); break;
+            case "csv": syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_CSV); break;
+            case "css": syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_CSS); break;
+            case "cs": syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_CSHARP); break;
+            case "cpp": syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_CPLUSPLUS); break;
+            case "c": syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_C); break;
+            case "go": syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_GO); break;
+            case "html": syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_HTML); break;
+            case "json": syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JSON); break;
+            case "lua": syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_LUA); break;
+            case "php": syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_PHP); break;
+            case "py": syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_PYTHON); break;
+            default: syntaxTextArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE); break;
         }
     }
 
