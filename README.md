@@ -1,2 +1,2 @@
 # TextEditor
-Built using Java 17.
+Simple spaghetti school project
